@@ -3,3 +3,7 @@
   padding: 0;
   text-align: center;
 }
+
+canvas{
+  height: 100vh;
+}
