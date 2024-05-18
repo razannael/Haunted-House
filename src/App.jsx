@@ -4,11 +4,41 @@ import { OrbitControls } from '@react-three/drei'
 
 function App() {
 
+  const WALL_HEIGHT = 4
+  const ROOF_HEIGHT = 1
+
  const Floor = () => {
    return(
     <mesh rotation={[-Math.PI * 0.5, 0, 0]}>
       <planeGeometry args={[20, 20]}/>
       <meshStandardMaterial color={'#95AC78'} />
+    </mesh>
+   )
+ }
+
+ const Walls = () => {
+   return(
+    <mesh position={[0, WALL_HEIGHT / 2, 0]}>
+      <boxGeometry args={[ WALL_HEIGHT, WALL_HEIGHT, WALL_HEIGHT]}/>
+      <meshStandardMaterial color={'#ffffff'} />
+    </mesh>
+   )
+ }
+
+ const Roof = () => {
+   return(
+    <mesh position={[0, WALL_HEIGHT + ROOF_HEIGHT / 2, 0]} rotation={[0, -Math.PI * 0.25, 0]}>
+      <coneGeometry args={[ 3.5, ROOF_HEIGHT, 4]}/>
+      <meshStandardMaterial color={'#b35f45'} />
+    </mesh>
+   )
+ }
+
+ const Door = () => {
+   return(
+    <mesh position={[0, 1.1, WALL_HEIGHT / 2 +0.001]}>
+      <planeGeometry args={[2, 2.5, 100, 100]}/>
+      <meshStandardMaterial color={'#ff0000'} />
     </mesh>
    )
  }
@@ -27,6 +57,9 @@ function App() {
         position={[-4, 5, 2]} 
         color={'#b9d5ff'}/>
         <Floor/>
+        <Walls/>
+        <Roof/>
+        <Door/>
       </Canvas>
     </>
   )
