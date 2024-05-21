@@ -36,10 +36,21 @@ function App() {
 
  const Door = () => {
    return(
-    <mesh position={[0, 1.1, WALL_HEIGHT / 2 +0.001]}>
+    <mesh position={[0, 1.24, WALL_HEIGHT / 2 +0.001]}>
       <planeGeometry args={[2, 2.5, 100, 100]}/>
       <meshStandardMaterial color={'#ff0000'} />
     </mesh>
+   )
+ }
+
+const DoorLight = () => {
+  return(
+    <pointLight 
+    position={[0, 1.5, 2.9]}
+    color={'#ff7d46'}
+    intensity={1}
+    distance={10}
+    />
    )
  }
 
@@ -53,13 +64,14 @@ function App() {
         <OrbitControls/>
         <ambientLight intensity={0.1} color={'#b9d5ff'}/>
         <directionalLight 
-        intensity={1.2}
+        // intensity={1.2}
         position={[-4, 5, 2]} 
         color={'#b9d5ff'}/>
         <Floor/>
         <Walls/>
         <Roof/>
         <Door/>
+        <DoorLight/>
       </Canvas>
     </>
   )
