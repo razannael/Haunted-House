@@ -54,6 +54,15 @@ const DoorLight = () => {
    )
  }
 
+ const Bush = (props) => {
+   return(
+    <mesh {...props}>
+      <sphereGeometry args={[1, 16, 16]}/>
+      <meshStandardMaterial color={'#89c854'} />
+    </mesh>
+   )
+ }
+
   return (
     <>
       <Canvas 
@@ -72,6 +81,12 @@ const DoorLight = () => {
         <Roof/>
         <Door/>
         <DoorLight/>
+        <Bush position={[0.9, 0.2, 2.2]} scale={[0.4, 0.4, 0.4]}/>
+        <Bush position={[1.4, 0.1, 2.2]} scale={[0.25, 0.25, 0.25]}/>
+        <Bush scale={[-0.33, 0.33, 0.33]} position={[-0.8, 0.2, 2.2]}/>
+        <Bush scale={[0.15, 0.15, 0.15]} position={[1, 0.05, 2.6]}/>
+
+        <Bush scale={[0.15, 0.15, 0.15]} position={[-1.1, 0.05, 2.44]}/>
       </Canvas>
     </>
   )
