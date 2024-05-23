@@ -1,6 +1,7 @@
 import './App.css'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
+import { Fog } from 'three'
 
 function App() {
 
@@ -36,7 +37,7 @@ function App() {
 
  const Door = () => {
    return(
-    <mesh position={[0, 1.24, WALL_HEIGHT / 2 +0.001]}>
+    <mesh position={[0, 1.24, WALL_HEIGHT / 2 +0.002]}>
       <planeGeometry args={[2, 2.5, 100, 100]}/>
       <meshStandardMaterial color={'#ff0000'} />
     </mesh>
@@ -46,10 +47,10 @@ function App() {
 const DoorLight = () => {
   return(
     <pointLight 
-    position={[0, 1.5, 2.9]}
+    position={[0, 1.5, 3.4]}
     color={'#ff7d46'}
-    intensity={1}
-    distance={10}
+    intensity={3.5}
+    distance={19}
     />
    )
  }
@@ -63,19 +64,32 @@ const DoorLight = () => {
    )
  }
 
+const MoonLight = () => {
+
+  return (
+    <directionalLight 
+     intensity={0.5}
+    position={[-4, 5, 2]} 
+    color={'#b9d5ff'}/>
+  )
+}
+
   return (
     <>
       <Canvas 
-      camera={{ position: [0, 5, 15],
+      onCreated={(state) => {
+        state.gl.setClearColor('#262837')
+        state.gl.setPixelRatio(window.devicePixelRatio)
+        state.gl.setSize(window.innerWidth, window.innerHeight)
+        state.scene.fog = new Fog('#262837', 1, 19)
+      }}
+      camera={{ position: [0, 5, 12],
         near: 0.1,
         far: 100,
       }}>
         <OrbitControls/>
-        <ambientLight intensity={0.1} color={'#b9d5ff'}/>
-        <directionalLight 
-        // intensity={1.2}
-        position={[-4, 5, 2]} 
-        color={'#b9d5ff'}/>
+        <ambientLight intensity={0.11} color={'#b9d5ff'}/>
+        <MoonLight/>
         <Floor/>
         <Walls/>
         <Roof/>
