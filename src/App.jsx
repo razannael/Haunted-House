@@ -92,6 +92,7 @@ function App() {
     )
   }
 
+  
   const DoorLight = () => {
     return (
       <pointLight
@@ -107,6 +108,36 @@ function App() {
     )
   }
 
+  const SpookyTree = (props) => {
+  return (
+    <mesh {...props} castShadow>
+      <cylinderGeometry args={[0.2, 0.5, 5, 8]} />
+      <meshStandardMaterial color={'#4b3f28'} />
+      {/* Add branches */}
+      <mesh position={[0, 2.5, 0]} castShadow>
+        <cylinderGeometry args={[0.05, 0.1, 2, 8]} />
+        <meshStandardMaterial color={'#4b3f28'} />
+      </mesh>
+    </mesh>
+  );
+};
+
+const Bat = (props) => {
+  const batRef = useRef();
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+    const speedFactor = 0.3;
+    batRef.current.position.x = Math.sin(elapsedTime * speedFactor + props.offset) * 9;
+    batRef.current.position.z = Math.cos(elapsedTime * speedFactor + props.offset) * 5;
+    batRef.current.position.y = Math.abs(Math.sin(elapsedTime * 2 * speedFactor)) * 2 + 3;
+  });
+  return (
+    <mesh ref={batRef} {...props} castShadow>
+      <boxGeometry args={[0.15, 0.03, 0.0001]} />
+      <meshStandardMaterial color={'#000000'} opacity={0.6} transparent/>
+    </mesh>
+  );
+};
   const Bush = (props) => {
     return (
       <mesh {...props} castShadow>
@@ -206,6 +237,10 @@ function App() {
         <Bush scale={[-0.33, 0.33, 0.33]} position={[-0.8, 0.2, 2.2]} />
         <Bush scale={[0.15, 0.15, 0.15]} position={[1, 0.05, 2.6]} />
         <Bush scale={[0.15, 0.15, 0.15]} position={[-1.1, 0.05, 2.44]} />
+        <Bat offset={0} />
+<Bat offset={Math.PI / 1.5} />
+<Bat offset={Math.PI} />
+<Bat offset={(3 * Math.PI) / 1.5} />
         <Graves />
         <Ghost />
       </Canvas>
