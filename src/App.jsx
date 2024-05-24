@@ -1,18 +1,66 @@
 import './App.css'
 import React, { useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, PositionalAudio } from '@react-three/drei'
 import * as THREE from 'three'
+import groundTexture from './assets/ground_texture.jpg'
+import wallTexture from './assets/wall_texture.jpg'
+import doorTexture from './assets/door_texture.jpg'
+import graveTexture from './assets/grave_texture.jpeg'
 
 function App() {
   const WALL_HEIGHT = 4
   const ROOF_HEIGHT = 1
+  const textureLoader = new THREE.TextureLoader();
+
+  const MyAudioComponent = () => {
+    const audioRef = useRef(null);
+    const [audioContext, setAudioContext] = useState(null);
+  
+    useEffect(() => {
+      const handleUserGesture = () => {
+        if (audioContext && audioRef.current) {
+          audioContext.resume().then(() => {
+            audioRef.current.play();
+          });
+        } else {
+          const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+          setAudioContext(newAudioContext);
+          audioRef.current.context = newAudioContext;
+          newAudioContext.resume().then(() => {
+            audioRef.current.play();
+          });
+        }
+        window.removeEventListener('click', handleUserGesture);
+      };
+  
+      window.addEventListener('click', handleUserGesture);
+  
+      return () => {
+        window.removeEventListener('click', handleUserGesture);
+      };
+    }, [audioContext]);
+  
+    return (
+      <Canvas>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
+        <PositionalAudio
+          ref={audioRef}
+          url="src/assets/haunted-house.mp3"
+          distance={3}
+          loop
+        />
+      </Canvas>
+    );
+  };
+  
 
   const Floor = () => {
     return (
       <mesh rotation={[-Math.PI * 0.5, 0, 0]} receiveShadow>
         <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color={'#95AC78'} />
+        <meshStandardMaterial color={'#95AC78'} map={textureLoader.load(groundTexture)} />
       </mesh>
     )
   }
@@ -21,7 +69,7 @@ function App() {
     return (
       <mesh position={[0, WALL_HEIGHT / 2, 0]} castShadow>
         <boxGeometry args={[WALL_HEIGHT, WALL_HEIGHT, WALL_HEIGHT]} />
-        <meshStandardMaterial color={'#ffffff'} />
+        <meshStandardMaterial color={'#ffffff'}  map={textureLoader.load(wallTexture)}/>
       </mesh>
     )
   }
@@ -30,7 +78,7 @@ function App() {
     return (
       <mesh position={[0, WALL_HEIGHT + ROOF_HEIGHT / 2, 0]} rotation={[0, -Math.PI * 0.25, 0]} castShadow>
         <coneGeometry args={[3.5, ROOF_HEIGHT, 4]} />
-        <meshStandardMaterial color={'#b35f45'} />
+        <meshStandardMaterial color={'#ff0000'}  map ={textureLoader.load(doorTexture)}/>
       </mesh>
     )
   }
@@ -39,7 +87,7 @@ function App() {
     return (
       <mesh position={[0, 1.24, WALL_HEIGHT / 2 + 0.002]} castShadow>
         <planeGeometry args={[2, 2.5, 100, 100]} />
-        <meshStandardMaterial color={'#ff0000'} />
+        <meshStandardMaterial color={'#ff0000'} map={textureLoader.load(doorTexture)} />
       </mesh>
     )
   }
@@ -49,7 +97,7 @@ function App() {
       <pointLight
         position={[0, 1.5, 3.4]}
         color={'#ff7d46'}
-        intensity={3.5}
+        intensity={3.7}
         distance={19}
         castShadow
         shadow-mapSize-width={256}
@@ -87,7 +135,7 @@ function App() {
 
     useEffect(() => {
       const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2)
-      const graveMaterial = new THREE.MeshStandardMaterial({ color: "#b2b6b1" })
+      const graveMaterial = new THREE.MeshStandardMaterial({ color: "#b2b6b1",  map: textureLoader.load(graveTexture) })
 
       for (let i = 0; i < 50; i++) {
         const angle = Math.random() * Math.PI * 2.5
@@ -131,6 +179,7 @@ function App() {
     )
   }
 
+  
   return (
     <>
       <Canvas
@@ -143,6 +192,7 @@ function App() {
         }}
         camera={{ position: [0, 5, 12], near: 0.1, far: 100 }}
       >
+       
         <OrbitControls />
         <ambientLight intensity={0.11} color={'#b9d5ff'} />
         <MoonLight />
