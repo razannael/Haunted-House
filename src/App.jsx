@@ -122,6 +122,59 @@ function App() {
   );
 };
 
+
+const ColorfulLight = () => {
+  const lightRef = useRef();
+  const colors = ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#00ffff', '#ffff00']; // Array of colors
+  let colorIndex = 0;
+  let lastChangeTime = 0;
+
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+    const speed = 0.8; // Adjust speed for light movement
+    const radius = 4; // Adjust radius of light movement
+
+    // Update position
+    lightRef.current.position.x = Math.cos(elapsedTime * speed) * radius;
+    lightRef.current.position.z = Math.sin(elapsedTime * speed) * radius;
+    lightRef.current.position.y = 1.5 + Math.sin(elapsedTime * speed * 2); // Up and down motion
+
+    // Change color every second
+    if (elapsedTime - lastChangeTime > 1) {
+      lastChangeTime = elapsedTime;
+      colorIndex = (colorIndex + 1) % colors.length;
+      lightRef.current.color = new THREE.Color(colors[colorIndex]);
+    }
+  });
+
+  return (
+    <pointLight
+      ref={lightRef}
+      intensity={3}
+      distance={15}
+      castShadow
+      shadow-mapSize-width={256}
+      shadow-mapSize-height={256}
+      shadow-camera-far={4}
+    />
+  );
+};
+
+const MovingShadow = () => {
+  const shadowRef = useRef();
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+    shadowRef.current.position.x = Math.sin(elapsedTime * 0.5) * 3.7;
+    shadowRef.current.position.z = Math.cos(elapsedTime * 0.5) * 3.6;
+  });
+  return (
+    <mesh ref={shadowRef} position={[0, 0, 0]} castShadow>
+      <boxGeometry args={[1, 3, 0.01]} />
+      <meshStandardMaterial color={'#000000'} opacity={0.4} transparent/>
+    </mesh>
+  );
+};
+
 const Bat = (props) => {
   const batRef = useRef();
   useFrame(({ clock }) => {
@@ -243,6 +296,8 @@ const Bat = (props) => {
 <Bat offset={(3 * Math.PI) / 1.5} />
         <Graves />
         <Ghost />
+        <ColorfulLight/>
+        <MovingShadow />
       </Canvas>
     </>
   )
